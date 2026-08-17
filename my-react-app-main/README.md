@@ -76,9 +76,13 @@ sudo systemctl restart nginx
 # Récupérer l’IP publique & accéder à l’application 
 curl ifconfig.me
 #  Accès via navigateur :
+
 http://<public-ip>
+
 #  Vérification
+
 curl <public-ip>
+
 Si la page HTML s’affiche → l’application est déployée avec succès.
 
 
