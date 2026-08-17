@@ -1,0 +1,64 @@
+trigger:
+  branches:
+    include:
+      - main
+
+stages:
+  - stage: Build
+    jobs:
+      - job: build
+        pool: new-self-hosted-agent-pool
+        steps:
+          - checkout: self
+
+          - task: NodeTool@0
+            inputs:
+              versionSpec: '18.x'
+
+          - script: |
+              npm install
+              npm run build
+            displayName: 'Build React App'
+
+          - publish: build
+            artifact: react_build
+
+  - stage: Deploy
+    dependsOn: Build
+    jobs:
+      - job: deploy
+        pool: new-self-hosted-agent-pool
+        steps:
+          - download: current
+            artifact: react_build
+
+          # 1. Clean and Prepare Permissions
+          - task: SSH@0
+            displayName: 'Prepare Web Root'
+            inputs:
+              sshEndpoint: 'react-app-server-connection'
+              runOptions: 'commands'
+              commands: |
+                sudo rm -rf /var/www/html/*
+                sudo chown -R $USER:$USER /var/www/html
+
+          # 2. Upload files directly to /var/www/html
+          - task: CopyFilesOverSSH@0
+            displayName: 'Upload Build Artifacts'
+            inputs:
+              sshEndpoint: 'react-app-server-connection'
+              sourceFolder: '$(Pipeline.Workspace)/react_build'
+              targetFolder: '/var/www/html'
+              cleanTargetFolder: false
+
+          # 3. Finalize Permissions and Restart
+          - task: SSH@0
+            displayName: 'Finalize and Restart Nginx'
+            inputs:
+              sshEndpoint: 'react-app-server-connection'
+              runOptions: 'commands'
+              commands: |
+                sudo chown -R www-data:www-data /var/www/html
+                sudo find /var/www/html -type d -exec chmod 755 {} +
+                sudo find /var/www/html -type f -exec chmod 644 {} +
+                sudo systemctl restart nginx
