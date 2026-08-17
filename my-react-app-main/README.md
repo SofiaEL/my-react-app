@@ -1,133 +1,70 @@
+# My React App — Production Deployment on Ubuntu VM with Nginx
+Déploiement complet d’une application React sur une VM Ubuntu avec Nginx, incluant build, configuration serveur, permissions Linux, optimisation et exposition via IP publique.
+Ce projet fait partie de mon portfolio DevOps, démontrant ma capacité à déployer une application front-end dans un environnement Linux réel
+# Objectifs du projet
+Construire une application React en mode production
 
-# **Deploy a React Application on Ubuntu VM with Nginx**
+Déployer l’application sur un serveur Ubuntu
 
-This guide provides step-by-step instructions to deploy and run a **This React application** on an **Ubuntu VM** using **Nginx**, making it accessible from a **public IP**.
+Configurer Nginx pour servir des fichiers statiques
 
----
+Gérer les permissions Linux (www-data)
 
+Exposer l’application via une IP publique
 
-## **1. Install Node.js and npm**  
-Since React requires **Node.js** and **npm**, install them first:  
+Vérifier le fonctionnement via curl et navigateur
+# Stack Technique
+React.js
 
-```sh
+Node.js / npm
+
+Ubuntu Server 22.04
+
+Nginx
+
+Git & GitHub
+
+Linux (bash)
+# Architecture
+React App → Build → Ubuntu VM → Nginx → Public IP → Browser
+# Structure du Projet
+my-react-app/
+ ├── public/
+ ├── src/
+ ├── build/
+ ├── Dockerfile
+ ├── package.json
+ └── README.md
+# Étapes de Déploiement
+#  Installer Node.js & npm
 sudo apt update
 sudo apt install -y nodejs npm
-```
-
-Verify the installation:  
-
-```sh
 node -v
 npm -v
-```
-
----
-
-## **2. Install Nginx**  
-Update package lists and install **Nginx**:  
-
-```sh
+# Installer et activer Nginx
 sudo apt install -y nginx
-```
-
-Start and enable Nginx:  
-
-```sh
 sudo systemctl start nginx
 sudo systemctl enable nginx
-```
-
-Check Nginx status:  
-
-```sh
 systemctl status nginx
-```
-
----
-
-## **3. Clone the React Application from GitHub**  
-Navigate to a temporary directory and **clone the repository**:  
-
-```sh
-git clone https://github.com/pravinmishraaws/my-react-app.git
+# Cloner l’application depuis GitHub
+git clone https://github.com/SofiaEL/my-react-app.git
 cd my-react-app
-```
-
-**Open the App.js file**
-
-Navigate to your React app’s source folder:
-
-```sh
-cd my-react-app/src
-```
-
-Open the App.js file in a text editor:
-
-```sh
-nano App.js
-```
-(or use vi/vim if you prefer)
-
-Modify the content
-
-```sh
-<h2>Deployed by: <strong>Your Full Name</strong></h2>
-<p>Date: <strong>DD/MM/YYYY</strong></p>
-```
-
-Update your details like: Your Full Name & Date
-
----
-
-## **4. Install Dependencies and Build the React App**  
-Install required dependencies:  
-
-```sh
+# Installer les dépendances & générer le build
 npm install
-```
-
-Build the React application:  
-
-```sh
 npm run build
-```
-
-This will generate a **`build/`** folder with production-ready static files.
-
----
-
-## **5. Deploy Build Files to Nginx Web Directory**  
-Remove any existing files in the Nginx web directory:  
-
-```sh
+Un dossier build/ est généré avec les fichiers statiques prêts pour la production.
+#  Déployer les fichiers build dans Nginx
 sudo rm -rf /var/www/html/*
-```
-
-Copy the React **build files** to `/var/www/html/`:  
-
-```sh
 sudo cp -r build/* /var/www/html/
-```
-
-Set proper permissions:  
-
-```sh
 sudo chown -R www-data:www-data /var/www/html
 sudo chmod -R 755 /var/www/html
-```
-
----
-
-## **6. Configure Nginx for React**  
-Nginx configuration file:   
-
-```
+# Configurer Nginx pour React
 echo 'server {
     listen 80;
     server_name _;
     root /var/www/html;
     index index.html;
-    
+
     location / {
         try_files $uri /index.html;
     }
@@ -135,47 +72,30 @@ echo 'server {
     error_page 404 /index.html;
 }' | sudo tee /etc/nginx/sites-available/default > /dev/null
 
-```
-
-Restart Nginx to apply the changes:  
-
-```sh
 sudo systemctl restart nginx
-```
-
----
-
-## **7. Find Your Public IP and Access the Application**  
-Retrieve the **public IP** of your Ubuntu VM:  
-
-```sh
+# Récupérer l’IP publique & accéder à l’application 
 curl ifconfig.me
-```
+#  Accès via navigateur :
+http://<public-ip>
+#  Vérification
+curl <public-ip>
+Si la page HTML s’affiche → l’application est déployée avec succès.
 
-Now, students can **access the React application** in a browser using:  
 
-```
-http://<your-public-ip>
-```
+🎓 Ce que j’ai appris
+Déploiement d’une application React en environnement Linux
 
-For example, if the public IP is **203.0.113.25**, visit:  
+Configuration Nginx pour servir des fichiers statiques
 
-```
-http://203.0.113.25
-```
+Gestion des permissions Linux (www-data)
 
----
+Build d’une application front-end
 
-## **8. Verify the Deployment**  
-Ensure Nginx is correctly serving the React app:  
+Exposition d’une application via IP publique
 
-```sh
-curl <your-public-ip>
-```
+Dépannage Nginx & logs système
 
-If successful, your **React app is live!**  
+Organisation d’un projet DevOps pour un portfolio professionnel
 
----
-
-## **Your React App is Now Live on Ubuntu with Nginx!**  
-Now your **React application** is deployed on an **Ubuntu VM with Nginx**, accessible from a **public IP**. 
+🔗 Repository GitHub
+https://github.com/SofiaEL/my-react-app (github.com in Bing)
