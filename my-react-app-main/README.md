@@ -82,7 +82,7 @@ curl <public-ip>
 Si la page HTML s’affiche → l’application est déployée avec succès.
 
 
-🎓 Ce que j’ai appris
+# 🎓 Ce que j’ai appris
 Déploiement d’une application React en environnement Linux
 
 Configuration Nginx pour servir des fichiers statiques
